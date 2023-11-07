@@ -1,0 +1,18 @@
+/*스트림:읽기 */
+const fs = require("fs");
+
+const readStream = fs.createReadStream("./readme3.txt", { highWaterMark: 16 }); //두번째 옵션은 버퍼크기
+const data = [];
+
+readStream.on("data", (chunk) => {
+  data.push(chunk);
+  console.log("data", chunk, chunk.length);
+});
+
+readStream.on("end", () => {
+  console.log("end", Buffer.concat(data).toString());
+});
+
+readStream.on("error", (err) => {
+  console.log(err);
+});
