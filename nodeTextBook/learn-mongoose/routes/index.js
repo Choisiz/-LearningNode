@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require("express");
+const User = require("../schemas/user");
+const router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get("/", async (req, res, next) => {
+  try {
+    const users = await User.find({});
+    res.render("mongoose", { users });
+  } catch (e) {
+    console.log(e);
+    next(e);
+  }
 });
 
 module.exports = router;
