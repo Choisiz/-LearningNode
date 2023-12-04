@@ -11,9 +11,11 @@ const passport = require("passport");
 dotenv.config();
 const pageRouter = require("./routes/page");
 const { sequelize } = require("./models");
+const passportConfig = require("./passport");
 
 const app = express();
 sequelize.sync();
+passportConfig(passport);
 //app.set(): 설정을 위한 메세드
 app.set("port", process.env.PORT || 8001);
 app.set("view engine", "html");
@@ -40,6 +42,8 @@ app.use(
   })
 );
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/", pageRouter);
 app.use((req, res, next) => {
   const err = new Error("Not Found");
