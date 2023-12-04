@@ -10,8 +10,10 @@ const passport = require("passport");
 
 dotenv.config();
 const pageRouter = require("./routes/page");
+const { sequelize } = require("./models");
 
 const app = express();
+sequelize.sync();
 //app.set(): 설정을 위한 메세드
 app.set("port", process.env.PORT || 8001);
 app.set("view engine", "html");
