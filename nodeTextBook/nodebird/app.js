@@ -10,6 +10,7 @@ const passport = require("passport");
 
 dotenv.config();
 const pageRouter = require("./routes/page");
+const authRouter = require("./routes/auth");
 const { sequelize } = require("./models");
 const passportConfig = require("./passport");
 
@@ -42,9 +43,11 @@ app.use(
   })
 );
 app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
+//req.session객체는 express-session생성하므로 passport미들웨어는 express-session보다 뒤에 연결
+app.use(passport.initialize()); //요청객체에 passport 설정 저장
+app.use(passport.session()); //요청객체에 passport 정보 저장
 app.use("/", pageRouter);
+app.use("/auth", authRouter);
 app.use((req, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
