@@ -13,14 +13,13 @@ module.exports = (passport) => {
       async (accessToken, refreshToken, profile, done) => {
         try {
           const exUser = await User.findOne({
-            snsId: profile.id,
-            provider: "kakao",
+            where: { snsId: profile.id, provider: "kakao" },
           });
           if (exUser) {
             done(null, exUser);
           } else {
             const newUser = await User.create({
-              email: profile._json && profile.json.kaccount_email,
+              email: profile._json?.kakao_account?.email, // profile._json && profile.json.kaccount_email
               nick: profile.displayName,
               snsId: profile.id,
               provider: "kakao",
