@@ -1,67 +1,31 @@
 const express = require("express");
 const passport = require("passport");
-const bcrypt = require("bcrypt");
-const { isLoggedIn, isLoggedIn, isNotLoggedIn } = require("./middlewares");
-const { User } = require("../models");
+
+const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
+const { join, login, logout } = require("../controllers/auth");
 
 const router = express.Router();
 
-//회원가입
-router.post("/join", isNotLoggedIn, async (req, res, next) => {
-  const { email, nick, password } = req.body;
-  try {
-    const exUser = await User.findOne({ where: { email } });
-    if (exUser) {
-      req.flash("joinError", "이미가입된 이메일 입니다");
-      return res.redirect("/join");
-    }
-    const hash = await bcrypt.hash(password, 12);
-    await User.create({ email, nick, password: hash });
-    return res.redirect("/");
-  } catch (e) {
-    console.error(e);
-    return next(e);
-  }
-});
+// POST /auth/join
+router.post("/join", isNotLoggedIn, join);
 
-//로그인
-router.post("/join", isNotLoggedIn, async (req, res, next) => {
-  passport.authenticate("local", (authError, user, info) => {
-    if (authError) {
-      console.error(authError);
-      return next(authError);
-    }
-    if (!user) {
-      req.flash("loginError", info.message);
-      return res.redirect("/");
-    }
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        return next(loginError);
-      }
-      return res.redirect("/");
-    });
-  })(req, res, next);
-});
+// POST /auth/login
+router.post("/login", isNotLoggedIn, login);
 
-//로그아웃
-router.get("/logout", (req, res, next) => {
-  req.logout();
-  res.session.destroy();
-  res.redirect("/");
-});
+// GET /auth/logout
+router.get("/logout", isLoggedIn, logout);
 
-//kakao
-
+// GET /auth/kakao
 router.get("/kakao", passport.authenticate("kakao"));
+
+// GET /auth/kakao/callback
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
-    failureRedirect: "/",
+    failureRedirect: "/?error=카카오로그인 실패",
   }),
   (req, res) => {
-    res.redirect("/");
+    res.redirect("/"); // 성공 시에는 /로 이동
   }
 );
 
