@@ -4,6 +4,7 @@ const {
   renderProfile,
   renderJoin,
   renderMain,
+  renderHashtag,
 } = require("../controllers/page");
 
 const router = express.Router();
@@ -22,6 +23,6 @@ router.get("/join", isNotLoggedIn, renderJoin);
 
 router.get("/", renderMain);
 
-//router.get("/hashtag", renderHashtag);
+router.get("/hashtag", renderHashtag);
 
 module.exports = router;
