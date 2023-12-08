@@ -42,6 +42,6 @@ exports.createToken = async (req, res) => {
   }
 };
 
-exports.toKenTest = (req, res) => {
+exports.tokenTest = (req, res) => {
   res.json(res.locals.decoded);
 };
