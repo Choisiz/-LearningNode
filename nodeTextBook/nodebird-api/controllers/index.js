@@ -7,7 +7,6 @@ exports.renderLogin = async (req, res, next) => {
       where: { id: req.user?.id || null },
       include: { model: Domain },
     });
-    console.log("userssssss", user);
     res.render("login", {
       user,
       domains: user?.Domains,
